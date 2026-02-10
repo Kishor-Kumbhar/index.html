@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rutuja 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ff4e8a, #ff758c);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+    overflow: hidden;
+    padding: 20px;
+}
+
+.card {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    padding: 30px 25px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    width: 100%;
+    max-width: 380px;
+}
+
+h1 {
+    font-size: 2rem;
+    min-height: 2.6em;
+}
+
+p {
+    font-size: 1.1rem;
+    min-height: 2em;
+}
+
+.buttons {
+    position: relative;
+    height: 120px;
+    margin-top: 20px;
+}
+
+button {
+    padding: 12px 24px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+}
+
+button:hover { transform: scale(1.1); }
+
+.yes {
+    background: #ffdde1;
+    color: #d6336c;
+}
+
+.no {
+    background: white;
+    color: #555;
+    position: absolute;
+    left: 60%;
+    top: 40%;
+}
+
+.popup {
+    margin-top: 10px;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.heart {
+    position: absolute;
+    font-size: 22px;
+    animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-900px); opacity: 0; }
+}
+
+@media (max-width: 480px) {
+    h1 { font-size: 1.8rem; }
+    p { font-size: 1rem; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="card">
+    <h1 id="title"></h1>
+    <p id="question"></p>
+
+    <div class="buttons" id="arena">
+        <button class="yes" onclick="yesClicked()">Yes 💕</button>
+        <button class="no" id="noBtn">No 😜</button>
+    </div>
+
+    <div class="popup" id="popup"></div>
+</div>
+
+<script>
+// -------- Typing ----------
+function typeText(el, text, speed, cb) {
+    let i = 0;
+    function t() {
+        if (i < text.length) {
+            el.innerHTML += text.charAt(i++);
+            setTimeout(t, speed);
+        } else if (cb) cb();
+    }
+    t();
+}
+
+typeText(title, "💖 Hey Rutuja 💖", 80, () => {
+    typeText(question, "Will you be my Valentine?", 60);
+});
+
+// -------- NO button chase logic ----------
+const noBtn = document.getElementById("noBtn");
+const arena = document.getElementById("arena");
+const popup = document.getElementById("popup");
+
+const msgs = [
+    "Almost 😏",
+    "Too slow 😜",
+    "Nice try 💕",
+    "Hehe nope 😈",
+    "You’re smiling, I know 😄"
+];
+
+function dodge(x, y) {
+    const rect = arena.getBoundingClientRect();
+    let nx = Math.random() * (rect.width - noBtn.offsetWidth);
+    let ny = Math.random() * (rect.height - noBtn.offsetHeight);
+
+    noBtn.style.left = nx + "px";
+    noBtn.style.top = ny + "px";
+
+    popup.innerText = msgs[Math.floor(Math.random() * msgs.length)];
+}
+
+// Mouse chase
+arena.addEventListener("mousemove", e => {
+    const btnRect = noBtn.getBoundingClientRect();
+    const dist = Math.hypot(
+        e.clientX - (btnRect.left + btnRect.width / 2),
+        e.clientY - (btnRect.top + btnRect.height / 2)
+    );
+
+    if (dist < 80) dodge();
+});
+
+// Touch chase
+arena.addEventListener("touchmove", e => {
+    const t = e.touches[0];
+    dodge(t.clientX, t.clientY);
+});
+
+// -------- YES clicked ----------
+function yesClicked() {
+    card.innerHTML = `
+        <h1>🥰 Yay Rutuja!</h1>
+        <p>You caught my heart 💗</p>
+        <p>Happy Valentine’s Day 💘</p>
+    `;
+    for (let i = 0; i < 45; i++) createHeart();
+}
+
+function createHeart() {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = "💖";
+    h.style.left = Math.random() * window.innerWidth + "px";
+    h.style.bottom = "0px";
+    h.style.animationDuration = (Math.random() * 2 + 3) + "s";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 5000);
+}
+</script>
+
+</body>
+</html>
